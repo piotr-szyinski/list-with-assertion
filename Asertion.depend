@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1524596947 source:c:\users\laptop vaio\desktop\piotrek\sob\asercja\asertion\main.cpp
+	<iostream>
+	<iomanip>
+	<fstream>
+	<string>
+	<stdlib.h>
+	<assert.h>
+
