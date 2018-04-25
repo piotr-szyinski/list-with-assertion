@@ -3,7 +3,10 @@
 #include <fstream>
 #include <string>
 #include <stdlib.h>
+
+//#define NDEBUG
 #include <assert.h>
+
 
 using namespace std;
 
@@ -61,7 +64,7 @@ class List{
           cout << " ]\n\n";
         }
 
-        void push(lista &L, double v)
+        void listPushFront(lista &L, double v)
         {
           el* p;
 
@@ -73,6 +76,20 @@ class List{
           L.size++;
           if(p->next) p->next->prev = p;
           else L.tail = p;
+        }
+
+        void listPushBack(lista &L, double v)
+        {
+          el* p;
+
+          p = new el;
+          p->data = v;
+          p->next = NULL;
+          p->prev = L.tail;
+          L.tail  = p;
+          L.size++;
+          if(p->prev) p->prev->next = p;
+          else L.head = p;
         }
 
         void listErase(lista &L, el* e)
@@ -92,8 +109,50 @@ class List{
             }
         }
 
-        void listSort(el * & h){
+        void listPopFront(lista &L){
+            if(L.size) listErase(L,L.head);
+        }
 
+        void listPopBack(lista &L){
+            if(L.size) listErase(L,L.tail);
+        }
+
+        void listPartition(el *head, el *tail){
+
+            el *p, *i, *j;
+
+            p = head->next;
+            i = p->next;
+
+            if(i != tail){
+                do{
+                    j = i;
+                    i = i->next;
+                    if(j->data > p->data){
+                        j->prev->next = j->next;
+                        j->next->prev = j->prev;
+                        j->next = p;
+                        j->prev = p->prev;
+                        p->prev = j;
+                        j->prev->next = j;
+                    }
+                }while(i != tail);
+            }
+
+            if(head->next != p ) listPartition(head,p);
+            if(p->next != tail) listPartition(p,tail);
+        }
+
+        void listSort(lista &L){
+
+            if(L.size > 1)
+            {
+                listPushFront(L,0);
+                listPushBack(L,0);
+                listPartition(L.head,L.tail);
+                listPopFront(L);
+                listPopBack(L);
+            }
         }
 
         virtual ~List(){}
@@ -116,8 +175,10 @@ public:
 
         cout << "Podaj zakres liczb do wczytania:" << endl << "Zakres dolny: ";
         cin >> downRange;
+        assert(downRange >= 0);
         cout << "Zakres gorny: ";
         cin >> upRange;
+        assert(upRange > downRange);
 
         system("cls");
     }
@@ -152,17 +213,14 @@ int main()
         ignoreWhiteMarks(plik);
         what = plik.peek(); //podgl¹damy co jest w strumieniu
         assert(isdigit(what));
-        /*if (isdigit(what)) {*/
-            plik>> value;
-            if(value >= r.getDownRange() && value <= r.getUpRange()){
-                assert(value >= r.getDownRange() && value <= r.getUpRange());
-                c.push(l,value);
-            }
-        /*} else {
-            plik>> str;
-            cout <<"Nie liczba: " <<str <<";" <<endl;
-        }*/
+        plik>> value;
+        if(value >= r.getDownRange() && value <= r.getUpRange()){
+            assert(value >= r.getDownRange() && value <= r.getUpRange());
+            c.listPushFront(l,value);
+        }
     }
+
+    c.listSort(l);
 
     c.printLeftToRight(l);
     c.printRightToLeft(l);
