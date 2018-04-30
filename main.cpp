@@ -155,6 +155,27 @@ class List{
             }
         }
 
+        bool isEmpty(lista &L){
+            if(L.size == 0){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        el* getHead(lista &L){
+            return L.head;
+        }
+
+        el* getTail(lista &L){
+            return L.tail;
+        }
+
+        double getSize(lista &L){
+            return L.size;
+        }
+
         virtual ~List(){}
 };
 
@@ -200,32 +221,35 @@ int main()
     lista l;
     Range r;
 
-    r.getRanges();
-    c.init(l);
+    r.getRanges(); // pobranie zakresu od uzytkownika
+    c.init(l);  // inicjalizacja listy
+    assert(((c.getHead(l) && c.getTail(l))==NULL)&&c.getSize(l)==0); // sprawdzenie czy lista poprawnie zainicjowana
 
     double value;
     char what;
     string str;
     filebuf* fb = new filebuf();
-    assert(fb->open("plik.txt", ios::in));
+    fb->open("plik.txt", ios::in);
+    assert(fb->is_open());  // assert sprawdzajacy czy plik jest otwarty
     istream plik(fb);
     while (!plik.eof()) {
         ignoreWhiteMarks(plik);
-        what = plik.peek(); //podgl�damy co jest w strumieniu
+        what = plik.peek(); //podgldamy co jest w strumieniu
         assert(isdigit(what));
-        plik>> value;
-        if(value >= r.getDownRange() && value <= r.getUpRange()){
-            assert(value >= r.getDownRange() && value <= r.getUpRange());
-            c.listPushFront(l,value);
+        plik>> value;   // pobranie liczby z pliku
+        if(value >= r.getDownRange() && value <= r.getUpRange()){ // warunek wpisujacy poprawne liczby do listy
+            assert(value >= r.getDownRange() && value <= r.getUpRange()); // sprawdzenie poprawnosci wpisywanych danych oraz czy warunek dziala
+            c.listPushFront(l,value); // dodanie wartosci do listy
         }
     }
-
-    c.listSort(l);
-
-    c.printLeftToRight(l);
-    c.printRightToLeft(l);
-    c.listRemove(l);
-    c.printRightToLeft(l);
+    assert(c.isEmpty(l)==0); // assert czy pomyślnie dodano elementy do listy
+    c.listSort(l);  // posortowanie listy
+    c.printLeftToRight(l); // wypisanie listy od lewa to prawa
+    c.printRightToLeft(l); // wypisanie listy od prawa do lewa
+    c.listRemove(l);    // usuniecie listy
+    c.printRightToLeft(l); // pokazanie czy usunelo liste
+    cout << "Czy lista poprawnie usunieta: " << boolalpha << c.isEmpty(l) << endl;
+    assert(c.isEmpty(l)==1); // assert czy lista poprawnie usunięta
     fb->close();
 
     return 0;
