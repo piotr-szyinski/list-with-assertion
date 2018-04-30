@@ -195,11 +195,11 @@ public:
     void getRanges(){
 
         cout << "Podaj zakres liczb do wczytania:" << endl << "Zakres dolny: ";
-        cin >> downRange;
+        cin >> downRange; // sprawdzanie poprawności wpisywanego zakresu
         assert(downRange >= 0);
         cout << "Zakres gorny: ";
         cin >> upRange;
-        assert(upRange > downRange);
+        assert(upRange > downRange); // sprawdzanie poprawności wpisywanego zakresu
 
         system("cls");
     }
@@ -223,7 +223,7 @@ int main()
 
     r.getRanges(); // pobranie zakresu od uzytkownika
     c.init(l);  // inicjalizacja listy
-    assert(((c.getHead(l) && c.getTail(l))==NULL)&&c.getSize(l)==0); // sprawdzenie czy lista poprawnie zainicjowana
+    assert(c.getHead(l)==NULL&&c.getTail(l)==NULL&&c.getSize(l)==0); // sprawdzenie czy lista poprawnie zainicjowana
 
     double value;
     char what;
@@ -235,10 +235,10 @@ int main()
     while (!plik.eof()) {
         ignoreWhiteMarks(plik);
         what = plik.peek(); //podgldamy co jest w strumieniu
-        assert(isdigit(what));
+        assert(isdigit(what)); // assert sprawdzajacy czy pobrana wartość jest liczbą
         plik>> value;   // pobranie liczby z pliku
         if(value >= r.getDownRange() && value <= r.getUpRange()){ // warunek wpisujacy poprawne liczby do listy
-            assert(value >= r.getDownRange() && value <= r.getUpRange()); // sprawdzenie poprawnosci wpisywanych danych oraz czy warunek dziala
+            assert(value >= r.getDownRange() && value <= r.getUpRange()); // sprawdzenie czy warunek dziala
             c.listPushFront(l,value); // dodanie wartosci do listy
         }
     }
